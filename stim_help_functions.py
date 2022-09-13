@@ -2,6 +2,7 @@ import sys, os
 import cv2
 from os.path import isfile, join
 import numpy as np
+import math
 
 
 def video_to_images(path_video, save=False):
@@ -133,4 +134,64 @@ def create_flash_stimulus(X,Y,T, t_flash, value_flash=255, value_background=0, s
         else:
             return list_frame
 
+def create_apparent_motion_stimulus(X,Y,T, t_point, t_interpoint, d_point, save=True):
+    list_frame = []
+    diameter = 10 #pixels
+
+    duration_begin = math.floor((T-2*t_point-t_interpoint)/2) #frames
+    duration_end = math.ceil((T-2*t_point-t_interpoint)/2) #frames
+
+    d_edge = (Y - 2*diameter - d_point)/2 #pixels
+    center_first_point = (X/2,d_edge + diameter/2) #pixels
+    center_second_point = (X/2,Y-d_edge - diameter/2) #pixels
+
+    for k in range(1,T+1):
+        current_frame = np.zeros(X*Y).reshape(X,Y)
+        if k>duration_begin and k<=duration_begin+t_point:
+            for x in range(X):
+                for y in range(Y):
+                    if ((x-center_first_point[0])**2 + (y-center_first_point[1])**2) < (diameter/2) **2:
+                        current_frame[x,y] = 255
+        
+
+        if k>T-duration_end-t_point and k<=T-duration_end:
+            for x in range(X):
+                for y in range(Y):
+                    if ((x-center_second_point[0])**2 + (y-center_second_point[1])**2) < (diameter/2) **2:
+                        current_frame[x,y] = 255
+
+        list_frame += [current_frame]
+
+        if save:
+            name = "frame" + str(k)
+            cv2.imwrite("/user/jemonet/home/Documents/Thèse/Code/Stimuli/apparent_motion_stimulus/"+name+".jpg",current_frame)
+    
+    # return list_frame
+
+
+
+def create_fixedpoint_stimulus(X,Y,T, t_point, save=True):
+    list_frame = []
+    diameter = 10 #pixels
+
+    duration_begin = math.floor(T/2 - t_point/2) #frames
+    duration_end = math.ceil(T/2 + t_point/2) #frames
+
+    center_first_point = (X/2,Y/2) #pixels
+
+    for k in range(1,T+1):
+        current_frame = np.zeros(X*Y).reshape(X,Y)
+        if k>duration_begin and k<duration_end:
+            for x in range(X):
+                for y in range(Y):
+                    if ((x-center_first_point[0])**2 + (y-center_first_point[1])**2) < (diameter/2) **2:
+                        current_frame[x,y] = 255
+
+        list_frame += [current_frame]
+
+        if save:
+            name = "frame" + str(k)
+            cv2.imwrite("/user/jemonet/home/Documents/Thèse/Code/Stimuli/fixedpoint_stimulus/"+name+".jpg",current_frame)
+    
+    # return list_frame
 
