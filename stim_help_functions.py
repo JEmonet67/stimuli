@@ -48,8 +48,11 @@ def video_to_images(path_video, save=False):
 
 
 
-def images_to_video(nameVideo,input):
-    path_out = "/user/jemonet/home/Documents/Thèse/Stimuli/" + nameVideo
+def images_to_video(nameVideo,input, path_video=None):
+    if path_video != None:
+        path_out = path_video + nameVideo
+    else:
+        path_out = "/user/jemonet/home/Documents/Thèse/Stimuli/" + nameVideo
     fps = 60
     list_frame = []
     ext = nameVideo[len(nameVideo)-3:]
@@ -57,11 +60,13 @@ def images_to_video(nameVideo,input):
     if isinstance(input,str):
         #path_in = "."
         files = [f for f in os.listdir(input) if isfile(join(input,f))]
-        files.sort(key = lambda x: int(x[5:-4]))
+        files.sort(key = lambda x: int(x[1:-4]))
 
         for current_frame in range(len(files)):
             filename = input + "/" + files[current_frame]
-            img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+            img = cv2.imread(filename)
+            # img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+
             list_frame.append(img)
 
     if isinstance(input,list):
@@ -72,10 +77,10 @@ def images_to_video(nameVideo,input):
                 print("BEWARE, Element", current_frame, "isn't add because not a numpy.ndarray.")
 
                 
-    height, width = list_frame[0].shape
+    height, width, color = list_frame[0].shape
     size = (width,height)
     if ext=="mp4":
-        out = cv2.VideoWriter(path_out, cv2.VideoWriter_fourcc(*'mp4v'), fps, size, 0)
+        out = cv2.VideoWriter(path_out, cv2.VideoWriter_fourcc(*'mp4v'), fps, size, 1)
         for current_frame in range(len(list_frame)):
             out.write(list_frame[current_frame])
         out.release()
