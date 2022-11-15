@@ -15,7 +15,7 @@ def video_to_images(path_video, save=False):
             if not os.path.exists("data"):
                 os.makedirs("data")
         except:
-            Print("Error in creating data directory.")
+            print("Error in creating data directory.")
 
     
     has_frames,frame = cam.read()
@@ -48,7 +48,7 @@ def video_to_images(path_video, save=False):
 
 
 
-def images_to_video(nameVideo,input, path_video=None):
+def images_to_video(nameVideo,input, c = True, path_video=None):
     if path_video != None:
         path_out = path_video + nameVideo
     else:
@@ -64,8 +64,10 @@ def images_to_video(nameVideo,input, path_video=None):
 
         for current_frame in range(len(files)):
             filename = input + "/" + files[current_frame]
-            img = cv2.imread(filename)
-            # img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
+            if c:
+                img = cv2.imread(filename)
+            else:
+                img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
 
             list_frame.append(img)
 
@@ -76,11 +78,16 @@ def images_to_video(nameVideo,input, path_video=None):
             else:
                 print("BEWARE, Element", current_frame, "isn't add because not a numpy.ndarray.")
 
-                
-    height, width, color = list_frame[0].shape
+    if len(list_frame[0].shape)==3:
+        height, width, color = list_frame[0].shape
+    else:
+        height, width = list_frame[0].shape
     size = (width,height)
     if ext=="mp4":
-        out = cv2.VideoWriter(path_out, cv2.VideoWriter_fourcc(*'mp4v'), fps, size, 1)
+        if c:
+            out = cv2.VideoWriter(path_out, cv2.VideoWriter_fourcc(*'mp4v'), fps, size, 1)
+        else:
+            out = cv2.VideoWriter(path_out, cv2.VideoWriter_fourcc(*'mp4v'), fps, size, 0)
         for current_frame in range(len(list_frame)):
             out.write(list_frame[current_frame])
         out.release()
