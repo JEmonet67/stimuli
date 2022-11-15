@@ -52,7 +52,7 @@ def images_to_video(nameVideo,input, path_video=None):
     if path_video != None:
         path_out = path_video + nameVideo
     else:
-        path_out = "/user/jemonet/home/Documents/Thèse/Stimuli/" + nameVideo
+        path_out = "/user/jemonet/home/Documents/These/Stimuli/" + nameVideo
     fps = 60
     list_frame = []
     ext = nameVideo[len(nameVideo)-3:]
