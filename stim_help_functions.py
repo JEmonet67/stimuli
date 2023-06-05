@@ -83,6 +83,7 @@ def images_to_video(nameVideo,input, c = True, path_video=None):
     else:
         height, width = list_frame[0].shape
     size = (width,height)
+    print(size)
     if ext=="mp4":
         if c:
             out = cv2.VideoWriter(path_out, cv2.VideoWriter_fourcc(*'mp4v'), fps, size, 1)
