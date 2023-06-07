@@ -3,6 +3,8 @@ import cv2
 from os.path import isfile, join
 import numpy as np
 import math
+import moviepy.video.io.ImageSequenceClip
+import re
 
 
 def video_to_images(path_video, save=False):
@@ -48,7 +50,30 @@ def video_to_images(path_video, save=False):
 
 
 
-def images_to_video(nameVideo,input, c = True, path_video=None):
+
+
+def images_to_video_moviepy(nameVideo,folder_images, path_video=None):
+    num_frames_reg = re.compile(".*/frame([0-9]*).jpg")
+    if path_video != None:
+        path_out = path_video + nameVideo
+    else:
+        path_out = "/user/jemonet/home/Documents/These/stimuli/" + nameVideo
+    fps = 60
+
+    if isinstance(folder_images,str):
+        #path_in = "."
+        files = [os.path.join(folder_images, img)
+                       for img in os.listdir(folder_images)
+                       if img.endswith(".jpg")]
+        files.sort(key = lambda x: int(num_frames_reg.findall(x)[0]))
+
+        clip = moviepy.video.io.ImageSequenceClip.ImageSequenceClip(files, fps=fps)
+        clip.write_videofile(f"{path_out}")
+
+    else:
+        print("Format not found")
+
+def images_to_video_copy(nameVideo,input, c = True, path_video=None):
     if path_video != None:
         path_out = path_video + nameVideo
     else:
@@ -83,7 +108,6 @@ def images_to_video(nameVideo,input, c = True, path_video=None):
     else:
         height, width = list_frame[0].shape
     size = (width,height)
-    print(size)
     if ext=="mp4":
         if c:
             out = cv2.VideoWriter(path_out, cv2.VideoWriter_fourcc(*'mp4v'), fps, size, 1)
