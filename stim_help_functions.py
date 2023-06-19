@@ -73,12 +73,11 @@ def images_to_video_moviepy(nameVideo,folder_images, path_video=None):
     else:
         print("Format not found")
 
-def images_to_video_copy(nameVideo,input, c = True, path_video=None):
+def images_to_video_cv2(nameVideo,input, c = True, path_video=None, fps = 60):
     if path_video != None:
         path_out = path_video + nameVideo
     else:
         path_out = "/user/jemonet/home/Documents/These/stimuli/" + nameVideo
-    fps = 60
     list_frame = []
     ext = nameVideo[len(nameVideo)-3:]
 
