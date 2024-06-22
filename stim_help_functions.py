@@ -18,12 +18,13 @@ def video_to_images(path_video, save=False):
                 os.makedirs("data")
         except:
             print("Error in creating data directory.")
+    print(os.getcwd())
 
     
     has_frames,frame = cam.read()
     
     while has_frames:
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
         if save:
             name = "frame" + str(current_frame)
@@ -52,13 +53,12 @@ def video_to_images(path_video, save=False):
 
 
 
-def images_to_video_moviepy(nameVideo,folder_images, path_video=None):
+def images_to_video_moviepy(nameVideo,folder_images, path_video=None, fps=60):
     num_frames_reg = re.compile(".*/frame([0-9]*).jpg")
     if path_video != None:
         path_out = path_video + nameVideo
     else:
         path_out = "/user/jemonet/home/Documents/These/stimuli/" + nameVideo
-    fps = 60
 
     if isinstance(folder_images,str):
         #path_in = "."
