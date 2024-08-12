@@ -7,7 +7,7 @@ import moviepy.video.io.ImageSequenceClip
 import re
 
 
-def video_to_images(path_video, save=False):
+def video_to_images(path_video, save=False, step = 1):
     cam = cv2.VideoCapture(path_video)
     list_frame = []
 
@@ -22,19 +22,20 @@ def video_to_images(path_video, save=False):
 
     
     has_frames,frame = cam.read()
-    
+    i_frame = 0
     while has_frames:
         #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        
-        if save:
-            name = "frame" + str(current_frame)
-            #print("Creating..." + name)
-            cv2.imwrite("./data/"+name+".jpg",frame)
-            current_frame += 1
-        
-        else:
-            list_frame += [frame]
-        
+        if i_frame%step == 0:
+            if save:
+                name = "frame" + str(current_frame)
+                #print("Creating..." + name)
+                cv2.imwrite("./data/"+name+".jpg",frame)
+                current_frame += 1
+
+            else:
+                list_frame += [frame]
+
+        i_frame += 1
         has_frames,frame = cam.read()
         
     
